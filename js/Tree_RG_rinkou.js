@@ -26,6 +26,8 @@ TREE.event = {
         //TREE.root = rootNode;
         //ルートはnode[prm]になってない！！！
         eval("node" + seeds[0] + "= rootNode");
+        //ルートが入ったことをTREE.dicに宣言しとく。
+        TREE.dic[seeds[0]] =1;
 
 
 
