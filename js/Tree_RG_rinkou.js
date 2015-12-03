@@ -27,7 +27,7 @@ TREE.event = {
         //ルートはnode[prm]になってない！！！
         eval("node" + seeds[0] + "= rootNode");
         //ルートが入ったことをTREE.dicに宣言しとく。
-        TREE.dic[seeds[0]] =1;
+        TREE.dic[seeds[0]] = 1;
 
 
 
@@ -90,8 +90,8 @@ TREE.event = {
                 if (eval("node" + TREE.comparision.prm + ".rightChild")) {
                     //次の比較対象をそいつにする。
                     alert("次の比較対象はこいつだ" + TREE.comparision.rightChild.prm);
-                    
-                    
+
+
                     TREE.comparision = TREE.comparision.rightChild;
                 } else {
                     //比較対象の下にこのノードが入るわけなので、比較対象の.leaf属性をfaleseにする。
@@ -127,7 +127,7 @@ TREE.event = {
         }
 
         //一通り完了したら、cosole.logしとく。
-        console.log("node" + seed +":OK");
+        console.log("node" + seed + ":OK");
     },
     find: function () {
 
@@ -143,13 +143,11 @@ TREE.event = {
 
 //ランダムにノードシードに整数値を入れるよ。
 function getRandomInt(min, max, amount) {
-    if ((max - min) < amount) {
-        alert("生成するノードの数は最小値〜最大値に収まるようにして下さい。");
-    } else {
-        for (var i = 0; i < amount; i++) {
-            nodeSeeds[i] = Math.floor(Math.random() * (max - min + 1)) + parseInt($("#min").val());//パースイント出来無い
-            console.log(nodeSeeds[i]);
-        }
+
+    for (var i = 0; i < amount; i++) {
+        nodeSeeds[i] = Math.floor(Math.random() * (max - min + 1)) + parseInt($("#min").val());//パースイント出来無い
+        console.log(nodeSeeds[i]);
+
     }
 }
 
@@ -187,14 +185,14 @@ $("#treeOutput").bind("click", function () {
 });
 
 //このノードを挿入するで後から挿入出来る
-$("#insert").bind("click", function(){
-   var target =$("#target").val();
-   if(TREE.dic[target]){
-       $("#resultMsg").html(target +"は既に存在します。");
-       return;
-   }
-   TREE.event.insert(target);
-   //終わったらエラーログを追加。
-   $("#resultMsg").html(target + "を挿入しました。");
-   
+$("#insert").bind("click", function () {
+    var target = $("#target").val();
+    if (TREE.dic[target]) {
+        $("#resultMsg").html(target + "は既に存在します。");
+        return;
+    }
+    TREE.event.insert(target);
+    //終わったらエラーログを追加。
+    $("#resultMsg").html(target + "を挿入しました。");
+
 });
