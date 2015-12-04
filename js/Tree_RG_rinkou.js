@@ -54,7 +54,7 @@ TREE.event = {
          }*/
 
         //ツリー生成が完了したらDOMに書き込む。
-        $("#errMsg").html("ツリーの生成が完了しました。下記から操作をしてみてください。");
+        $("#errMsg").html("ツリーの生成が完了しました。高さ:"+ TREE.height + "<br>下記から操作をしてみてください。");
 
 
 
@@ -125,12 +125,44 @@ TREE.event = {
 
             }
         }
-
+        //木の高さを求めるために、TREE.heightに最高値を記録しておく
+        if(eval("node" + seed + ".depth > TREE.height")){
+            //TREE.heightよりnode[seed]の深さが大きい場合、
+            eval("TREE.height = node" + seed + ".depth");
+        }
         //一通り完了したら、cosole.logしとく。
         console.log("node" + seed + ":OK");
     },
-    find: function () {
-
+    find: function (seed) {
+//
+//        //最初の比較ターゲットは根
+//        TREE.comparision = eval("node" + nodeSeeds[0]);
+//        while (TREE.comparision.prm !== seed) {
+//            //探したいターゲットが比較対象より大きい時
+//            if (TREE.comparision.prm < seed) {
+//                if (!TREE.comparision.rightChild) {
+//                    //比較対象の右の子供が存在しない時
+//                    return (seed + "はこのツリーに存在しません。近似値としては" + TREE.comparision.prm + "があります。").toString();
+//
+//                }
+//                //次のターゲットは今の比較対象の右の子供
+//                TREE.comparision = TREE.comparision.rightChild;
+//            } else if (TREE.comparision.prm > seed) {
+//                //探したいターゲットが比較対象より小さい時
+//                if (!TREE.comparision.leftChild) {
+//                    //比較対象の左の子供が存在しない時
+//                    return (seed + "はこのツリーに存在しません。近似値としては" + TREE.comparision.prm + "があります。").toString();
+//
+//                }
+//                //次のターゲットは今の比較対象の左の子供
+//                TREE.comparision = TREE.comparision.leftChild;
+//            }
+//        }
+//        if (TREE.comparision.prm === seed) {
+//            //探したいターゲットがそのものの時
+//            return (TREE.comparision.position()).toString();
+//        }
+//
 
     },
     sort: function () {
@@ -196,3 +228,12 @@ $("#insert").bind("click", function () {
     $("#resultMsg").html(target + "を挿入しました。");
 
 });
+
+
+//$("#find").bind("click", function(){
+//    var target = $("#target").val();
+//    //findは返り値で文字列を持ってくるのでそれをただhtmlに投げる。
+//    $("#resultMsg").html(TREE.event.find(target));
+//    
+//    
+//});
