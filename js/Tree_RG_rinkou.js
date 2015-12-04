@@ -53,8 +53,8 @@ TREE.event = {
          
          }*/
 
-        //ツリー生成が完了したらDOMに書き込む。
-        $("#errMsg").html("ツリーの生成が完了しました。高さ:"+ TREE.height + "<br>下記から操作をしてみてください。");
+        //ツリー生成が完了したらDOMに書き込む。Object.keys().lengthは連想配列の項目数を表す。TREE.dicは被りを覗いた全てのノードが入ってる。
+        $("#errMsg").html("ツリーの生成が完了しました。高さ:"+ TREE.height + " ノードの数:" +Object.keys(TREE.dic).length + "<br>下記から操作をしてみてください。");
 
 
 
