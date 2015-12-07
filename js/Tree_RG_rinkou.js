@@ -84,12 +84,12 @@ TREE.event = {
 
             //seedが比較対象より大きいまたは等しい時、右に持っていく
             if (TREE.comparision.prm < seed) {
-                alert("おおきいよ！" + seed);
+                //alert("おおきいよ！" + seed);
 
                 //比較対象に右の子供がいる場合
                 if (eval("node" + TREE.comparision.prm + ".rightChild")) {
                     //次の比較対象をそいつにする。
-                    alert("次の比較対象はこいつだ" + TREE.comparision.rightChild.prm);
+                    //alert("次の比較対象はこいつだ" + TREE.comparision.rightChild.prm);
 
 
                     TREE.comparision = TREE.comparision.rightChild;
@@ -105,11 +105,11 @@ TREE.event = {
                 }
             } else if (TREE.comparision.prm > seed) {//seedが比較対象より小さい時
 
-                alert("小さいよ" + seed);
+                //alert("小さいよ" + seed);
                 //比較対象に左の子供がいる場合
                 if (eval("node" + TREE.comparision.prm + ".leftChild")) {
                     //次の比較対象はそいつにする。
-                    alert("次の比較対象はこいつだ" + TREE.comparision.leftChild.prm);
+                    //alert("次の比較対象はこいつだ" + TREE.comparision.leftChild.prm);
                     TREE.comparision = TREE.comparision.leftChild;
                 } else {
                     //比較対象の下にこのノードが入るわけなので、比較対象の.leaf属性をfaleseにする。
