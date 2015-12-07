@@ -250,7 +250,7 @@ $("#shougou").bind("click", function () {
 $("#sort").bind("click", function(){
     bubbleSort();
     for(var i =0;i<aftersort.length;i++){
-        $("#sMsg").append("バブルソート結果" + aftersort[i] + ",");
+        $("#sMsg").append(aftersort[i] + ",");
     }
 });
 
