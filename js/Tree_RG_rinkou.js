@@ -54,7 +54,7 @@ TREE.event = {
          }*/
 
         //ツリー生成が完了したらDOMに書き込む。Object.keys().lengthは連想配列の項目数を表す。TREE.dicは被りを覗いた全てのノードが入ってる。
-        $("#errMsg").html("ツリーの生成が完了しました。高さ:"+ TREE.height + " ノードの数:" +Object.keys(TREE.dic).length + "<br>下記から操作をしてみてください。");
+        $("#errMsg").html("ツリーの生成が完了しました。高さ:" + TREE.height + " ノードの数:" + Object.keys(TREE.dic).length + "<br>下記から操作をしてみてください。");
 
 
 
@@ -126,7 +126,7 @@ TREE.event = {
             }
         }
         //木の高さを求めるために、TREE.heightに最高値を記録しておく
-        if(eval("node" + seed + ".depth > TREE.height")){
+        if (eval("node" + seed + ".depth > TREE.height")) {
             //TREE.heightよりnode[seed]の深さが大きい場合、
             eval("TREE.height = node" + seed + ".depth");
         }
@@ -239,35 +239,57 @@ $("#insert").bind("click", function () {
 //});
 
 //探索比較用関数を呼び出す。
-$("#shougou").bind("click", function(){
+$("#shougou").bind("click", function () {
     var target = $("#s_target").val();
-    
+
     $("#sMsg").html(shougou(target));
-    
+
 });
-//探索比較用関数
-function shougou(target){
-     //何回出てきたか
-        var count =0;
-        //何番目が最初か
-        var th =0;
-        
-    
-    for(var i=0,len=nodeSeeds.length; i<len; i++){
-        
-       
-        if(target == nodeSeeds[i]){
-            count++;
-            if(th == 0){
-                th = i+1;
-            }
-            
-        }
-        
+
+//バブルソート関数を呼び出す。
+$("#sort").bind("click", function(){
+    bubbleSort();
+    for(var i =0;i<aftersort.length;i++){
+        $("#sMsg").append("バブルソート結果" + aftersort[i] + ",");
     }
-    return "探索が終了しました。配列内で" + target + "は" + count +"回出てきており、初めに出てきたのは" + th +"番目です。";
+});
+
+//探索比較用関数
+function shougou(target) {
+    //何回出てきたか
+    var count = 0;
+    //何番目が最初か
+    var th = 0;
+
+
+    for (var i = 0, len = nodeSeeds.length; i < len; i++) {
+
+
+        if (target == nodeSeeds[i]) {
+            count++;
+            if (th == 0) {
+                th = i + 1;
+            }
+
+        }
+
+    }
+    return "探索が終了しました。配列内で" + target + "は" + count + "回出てきており、初めに出てきたのは" + th + "番目です。";
 }
-function bubbleSort(){
-    
-    
+function bubbleSort() {
+    aftersort = nodeSeeds;
+    for (i = 0; i < aftersort.length - 1; i++)
+    {
+        for (j = 0; j < aftersort.length - i - 1; j++)
+        {
+            if (aftersort[j] > aftersort[j + 1])
+            {
+                n = aftersort[j];
+                aftersort[j] = aftersort[j + 1];
+                aftersort[j + 1] = n;
+            }
+        }
+    }
+   
+
 }
