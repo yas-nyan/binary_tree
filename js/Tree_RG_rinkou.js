@@ -237,3 +237,37 @@ $("#insert").bind("click", function () {
 //    
 //    
 //});
+
+//探索比較用関数を呼び出す。
+$("#shougou").bind("click", function(){
+    var target = $("#s_target").val();
+    
+    $("#sMsg").html(shougou(target));
+    
+});
+//探索比較用関数
+function shougou(target){
+     //何回出てきたか
+        var count =0;
+        //何番目が最初か
+        var th =0;
+        
+    
+    for(var i=0,len=nodeSeeds.length; i<len; i++){
+        
+       
+        if(target == nodeSeeds[i]){
+            count++;
+            if(th == 0){
+                th = i+1;
+            }
+            
+        }
+        
+    }
+    return "探索が終了しました。配列内で" + target + "は" + count +"回出てきており、初めに出てきたのは" + th +"番目です。";
+}
+function bubbleSort(){
+    
+    
+}
