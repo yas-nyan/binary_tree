@@ -62,10 +62,10 @@ TREE.event = {
     //seedの挿入はこちらを実行する。(一つのシードごとに呼び直すのでワンループの処理でおｋ)ツリーをビルドするときも、新規ノードを挿入する時もまたしかりである。
     insert: function (seed) {
 
-        //はじめに比べるのは必ず根ノードであるので、グローバル変数comparisionを宣言し(while内で弄りたいのでしゃーない)、初期値は根にする。
+        //はじめに比べるのは必ず根ノードであるので、初期値は根にする。
         TREE.comparision = eval("node" + nodeSeeds[0]);
 
-        //グローバル変数としてこのノードを宣言する。名前は安直にnode[prm] (ex,node1, node114514)
+        //もしTREE.dicに存在しなければグローバル変数としてこのノードを宣言する。名前は安直にnode[prm] (ex,node1, node114514)
         if (!TREE.dic[seed]) {
             TREE.dic[seed] = 1;
             eval("node" + seed + "= new Node(seed)");
@@ -98,6 +98,9 @@ TREE.event = {
                     //eval("node" + TREE.comparision.prm +".leaf = false");
                     //右の子供がいない場合,比較対象のグローバル変数node[prm]の右の子供を、node[seed]とする。
                     eval("node" + TREE.comparision.prm + ".rightChild = node" + seed);
+                    //比較対象のリーフ属性をこっそりfalseにする
+                    eval("node" + TREE.comparision.prm +".leaf = false");
+                    
                     //そんで、node[seed]の親をもともとの比較対象のノードにする。
                     eval("node" + seed + ".parent" + "= node" + TREE.comparision.prm);
                     //右の子供がいなかったということはすなわち、このノードは葉ノードになったということだね。これでループを抜ける。
@@ -116,6 +119,9 @@ TREE.event = {
                     //eval("node" + TREE.comparision.prm +".leaf = false");
                     //左の子供が居ない場合、比較対象のnode[prm]の左の子供はnode[seed]になる。
                     eval("node" + TREE.comparision.prm + ".leftChild = node" + seed);
+                    //比較対象のリーフ属性をこっそりfalseにする
+                    eval("node" + TREE.comparision.prm +".leaf = false");
+                    
                     //そんで、node[seed]の親を比較対象のノードにする。
                     eval("node" + seed + ".parent" + "= node" + TREE.comparision.prm);
                     //比較対象の左の子供がいなかったということはすなわち、このノードは葉ノードになったということだね。これでループを抜ける。
@@ -134,35 +140,35 @@ TREE.event = {
         console.log("node" + seed + ":OK");
     },
     find: function (seed) {
-//
-//        //最初の比較ターゲットは根
-//        TREE.comparision = eval("node" + nodeSeeds[0]);
-//        while (TREE.comparision.prm !== seed) {
-//            //探したいターゲットが比較対象より大きい時
-//            if (TREE.comparision.prm < seed) {
-//                if (!TREE.comparision.rightChild) {
-//                    //比較対象の右の子供が存在しない時
-//                    return (seed + "はこのツリーに存在しません。近似値としては" + TREE.comparision.prm + "があります。").toString();
-//
-//                }
-//                //次のターゲットは今の比較対象の右の子供
-//                TREE.comparision = TREE.comparision.rightChild;
-//            } else if (TREE.comparision.prm > seed) {
-//                //探したいターゲットが比較対象より小さい時
-//                if (!TREE.comparision.leftChild) {
-//                    //比較対象の左の子供が存在しない時
-//                    return (seed + "はこのツリーに存在しません。近似値としては" + TREE.comparision.prm + "があります。").toString();
-//
-//                }
-//                //次のターゲットは今の比較対象の左の子供
-//                TREE.comparision = TREE.comparision.leftChild;
-//            }
-//        }
-//        if (TREE.comparision.prm === seed) {
-//            //探したいターゲットがそのものの時
-//            return (TREE.comparision.position()).toString();
-//        }
-//
+
+        //最初の比較ターゲットは根
+        TREE.comparision = eval("node" + nodeSeeds[0]);
+        while (TREE.comparision.prm != seed) {
+            //探したいターゲットが比較対象より大きい時
+            if (TREE.comparision.prm < seed) {
+                if (!TREE.comparision.rightChild) {
+                    //比較対象の右の子供が存在しない時
+                    return (seed + "はこのツリーに存在しません。近似値としては" + TREE.comparision.prm + "があります。").toString();
+
+                }
+                //次のターゲットは今の比較対象の右の子供
+                TREE.comparision = TREE.comparision.rightChild;
+            } else if (TREE.comparision.prm > seed) {
+                //探したいターゲットが比較対象より小さい時
+                if (!TREE.comparision.leftChild) {
+                    //比較対象の左の子供が存在しない時
+                    return (seed + "はこのツリーに存在しません。近似値としては" + TREE.comparision.prm + "があります。").toString();
+
+                }
+                //次のターゲットは今の比較対象の左の子供
+                TREE.comparision = TREE.comparision.leftChild;
+            }
+        }
+        if (TREE.comparision.prm == seed) {
+            //探したいターゲットがそのものの時
+            return TREE.comparision.position();
+        }
+
 
     },
     sort: function () {
@@ -229,14 +235,14 @@ $("#insert").bind("click", function () {
 
 });
 
-
-//$("#find").bind("click", function(){
-//    var target = $("#target").val();
-//    //findは返り値で文字列を持ってくるのでそれをただhtmlに投げる。
-//    $("#resultMsg").html(TREE.event.find(target));
-//    
-//    
-//});
+//木から探索関数を呼び出す。
+$("#find").bind("click", function(){
+    var target = $("#target").val();
+    //findは返り値で文字列を持ってくるのでそれをただhtmlに投げる。
+    $("#resultMsg").html(TREE.event.find(target));
+    
+    
+});
 
 //探索比較用関数を呼び出す。
 $("#shougou").bind("click", function () {
