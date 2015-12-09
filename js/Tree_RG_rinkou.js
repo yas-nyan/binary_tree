@@ -5,7 +5,7 @@ var TREE = TREE || {
 var nodeSeeds = [];
 TREE.height = "0";
 //生成後は個々のプロパティを維持したままのnodeオブジェクトが格納される。呼び出す時は、nodes[i]でOKだ。
-TREE.nodes = [];
+TREE.nodes = {};
 TREE.root = "";
 TREE.comparision = "";
 //被ってるノードがあるかチェックするための辞書
@@ -24,8 +24,8 @@ TREE.event = {
         var rootNode = new Node(seeds[0]);
         rootNode.depth = 0;
         //TREE.root = rootNode;
-        //ルートはnode[prm]になってない！！！
-        eval("node" + seeds[0] + "= rootNode");
+        
+        eval("TREE.nodes.node" + seeds[0] + "= rootNode");
         //ルートが入ったことをTREE.dicに宣言しとく。
         TREE.dic[seeds[0]] = 1;
 
@@ -38,20 +38,6 @@ TREE.event = {
 
 
 
-        /*seedsは実際に演算するまでseedのままでいいので以下をコメントアウト
-         for(var i=0,len = seeds.length;  i < len; i++){
-         // var node"i"  = new Node(seeds[i]); ってのがしたい！
-         
-         eval("var node" + i + "=" + "new Node(seeds[" + i +"]);");   //ローカル変数としてインスタンスを作成する。node0,node1,node2~
-         var thisnode = eval("node" + i);    //evalでnode i を変数にする。
-         TREE.nodes.push(thisnode);   //TREE.nodeの配列の最後尾に打ち込む
-         if(i === 0){    //i=0すなわち、node0を作ってるループであれば、そのnode+iのrootプロパティをtrueにする。
-         thisnode.root = true;
-         }
-         TREE.event.insert(thisnode);    //各ノードでツリーへの挿入を実行させる。ここもevalで処理。
-         console.log(TREE.nodes[i]);
-         
-         }*/
 
         //ツリー生成が完了したらDOMに書き込む。Object.keys().lengthは連想配列の項目数を表す。TREE.dicは被りを覗いた全てのノードが入ってる。
         $("#errMsg").html("ツリーの生成が完了しました。高さ:" + TREE.height + " ノードの数:" + Object.keys(TREE.dic).length + "<br>下記から操作をしてみてください。");
@@ -63,22 +49,22 @@ TREE.event = {
     insert: function (seed) {
 
         //はじめに比べるのは必ず根ノードであるので、初期値は根にする。
-        TREE.comparision = eval("node" + nodeSeeds[0]);
+        TREE.comparision = eval("TREE.nodes.node" + nodeSeeds[0]);
 
         //もしTREE.dicに存在しなければグローバル変数としてこのノードを宣言する。名前は安直にnode[prm] (ex,node1, node114514)
         if (!TREE.dic[seed]) {
             TREE.dic[seed] = 1;
-            eval("node" + seed + "= new Node(seed)");
+            eval("TREE.nodes.node" + seed + "= new Node(seed)");
         } else {
             //既に同じノードがある場合は終了。
             return;
         }
 
         //連続して比較する。葉ノードで無い時にループ
-        while (eval("node" + seed + ".leaf") === false) {
+        while (eval("TREE.nodes.node" + seed + ".leaf") === false) {
 
             //深さカウント whileを通過する度に１つずつ出していく。
-            eval("node" + seed + ".depth" + "=" + "node" + seed + ".depth +1");
+            eval("TREE.nodes.node" + seed + ".depth" + "=" + "TREE.nodes.node" + seed + ".depth +1");
 
 
 
@@ -87,62 +73,58 @@ TREE.event = {
                 //alert("おおきいよ！" + seed);
 
                 //比較対象に右の子供がいる場合
-                if (eval("node" + TREE.comparision.prm + ".rightChild")) {
+                if (eval("TREE.nodes.node" + TREE.comparision.prm + ".rightChild")) {
                     //次の比較対象をそいつにする。
                     //alert("次の比較対象はこいつだ" + TREE.comparision.rightChild.prm);
 
 
                     TREE.comparision = TREE.comparision.rightChild;
                 } else {
-                    //比較対象の下にこのノードが入るわけなので、比較対象の.leaf属性をfaleseにする。
-                    //eval("node" + TREE.comparision.prm +".leaf = false");
                     //右の子供がいない場合,比較対象のグローバル変数node[prm]の右の子供を、node[seed]とする。
-                    eval("node" + TREE.comparision.prm + ".rightChild = node" + seed);
+                    eval("TREE.nodes.node" + TREE.comparision.prm + ".rightChild = TREE.nodes.node" + seed);
                     //比較対象のリーフ属性をこっそりfalseにする
-                    eval("node" + TREE.comparision.prm + ".leaf = false");
+                    eval("TREE.nodes.node" + TREE.comparision.prm + ".leaf = false");
 
                     //そんで、node[seed]の親をもともとの比較対象のノードにする。
-                    //eval("node" + seed + ".parent" + "= node" + TREE.comparision.prm);
+                    eval("TREE.nodes.node" + seed + ".parent" + "= TREE.nodes.node" + TREE.comparision.prm);
                     //右の子供がいなかったということはすなわち、このノードは葉ノードになったということだね。これでループを抜ける。
-                    eval("node" + seed + ".leaf" + "= true");
+                    eval("TREE.nodes.node" + seed + ".leaf" + "= true");
                 }
             } else if (TREE.comparision.prm > seed) {//seedが比較対象より小さい時
 
                 //alert("小さいよ" + seed);
                 //比較対象に左の子供がいる場合
-                if (eval("node" + TREE.comparision.prm + ".leftChild")) {
+                if (eval("TREE.nodes.node" + TREE.comparision.prm + ".leftChild")) {
                     //次の比較対象はそいつにする。
                     //alert("次の比較対象はこいつだ" + TREE.comparision.leftChild.prm);
                     TREE.comparision = TREE.comparision.leftChild;
                 } else {
-                    //比較対象の下にこのノードが入るわけなので、比較対象の.leaf属性をfaleseにする。
-                    //eval("node" + TREE.comparision.prm +".leaf = false");
                     //左の子供が居ない場合、比較対象のnode[prm]の左の子供はnode[seed]になる。
-                    eval("node" + TREE.comparision.prm + ".leftChild = node" + seed);
+                    eval("TREE.nodes.node" + TREE.comparision.prm + ".leftChild = TREE.nodes.node" + seed);
                     //比較対象のリーフ属性をこっそりfalseにする
-                    eval("node" + TREE.comparision.prm + ".leaf = false");
+                    eval("TREE.nodes.node" + TREE.comparision.prm + ".leaf = false");
 
                     //そんで、node[seed]の親を比較対象のノードにする。
-                    //eval("node" + seed + ".parent" + "= node" + TREE.comparision.prm);
+                    eval("TREE.nodes.node" + seed + ".parent" + "= TREE.nodes.node" + TREE.comparision.prm);
                     //比較対象の左の子供がいなかったということはすなわち、このノードは葉ノードになったということだね。これでループを抜ける。
-                    eval("node" + seed + ".leaf" + "= true");
+                    eval("TREE.nodes.node" + seed + ".leaf" + "= true");
                 }
 
 
             }
         }
         //木の高さを求めるために、TREE.heightに最高値を記録しておく
-        if (eval("node" + seed + ".depth > TREE.height")) {
+        if (eval("TREE.nodes.node" + seed + ".depth > TREE.height")) {
             //TREE.heightよりnode[seed]の深さが大きい場合、
-            eval("TREE.height = node" + seed + ".depth");
+            eval("TREE.height = TREE.nodes.node" + seed + ".depth");
         }
         //一通り完了したら、cosole.logしとく。
-        console.log("node" + seed + ":OK");
+        console.log("TREE.nodes.node" + seed + ":OK");
     },
     find: function (seed) {
 
         //最初の比較ターゲットは根
-        TREE.comparision = eval("node" + nodeSeeds[0]);
+        TREE.comparision = eval("TREE.nodes.node" + nodeSeeds[0]);
         while (TREE.comparision.prm != seed) {
             //探したいターゲットが比較対象より大きい時
             if (TREE.comparision.prm < seed) {
@@ -227,13 +209,13 @@ var Node = function (prm) {
     this.prm = prm;
     this.depth = 0;
     this.leaf = false; //葉ノードであるかどうかはブーリアン型で定義付け。デフォはfalse
-    //this.parent = "";
+    this.parent = "";
     this.rightChild = "";
     this.leftChild = "";
 };
 //ノードの今の場所を確認するメソッド
 Node.prototype.position = function () {
-    return "数値:" + this.prm + "　親:" + this.parent.prm + "　子:" + this.leftChild.prm + "," + this.rightChild.prm;
+    return "数値:" + this.prm + " 深さ"+ this.depth +"　親:" + this.parent.prm + "　子:" + this.leftChild.prm + "," + this.rightChild.prm;
 };
 
 
@@ -332,6 +314,7 @@ $("#makegraf").bind("click", function(){
 });
 //オブジェクトをJSONにする。
 function makeGraf() {
-     json_text = JSON.parse(JSON.stringify(eval("node" + nodeSeeds[0])));
-    alert(json_text);
+    $.parseJSON(TREE.nodes);
+     
+    //alert(json_text);
 }
