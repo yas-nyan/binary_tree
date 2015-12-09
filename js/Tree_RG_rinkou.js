@@ -1,14 +1,12 @@
 
 var TREE = TREE || {
 };
-//グローバル変数を使いたくない。が、無理なものもあるんだ…
 var nodeSeeds = [];
 TREE.height = "0";
-//生成後は個々のプロパティを維持したままのnodeオブジェクトが格納される。呼び出す時は、nodes[i]でOKだ。
 TREE.nodes = {};
 TREE.root = "";
 TREE.comparision = "";
-//被ってるノードがあるかチェックするための辞書
+//被ってるノードがあるかチェックするためのハッシュ
 TREE.dic = {};
 
 
@@ -16,11 +14,16 @@ TREE.commonMethod = {
 };
 
 TREE.event = {
-    //新しいツリーを作成するときに"一度だけ"実行する。二度目以降は上書きされるはず。
+    /*
+     * ツリーの作成メソッドです。TREE.event.buildで発火します。
+     * 
+     */
+    //新しいツリーを作成するときに"一度だけ"実行する。二度目以降は上書きされる。
     build: function (seeds) {
+
         //引数seedsにはnodeSeedsが入る。
 
-        //TREE.rootにseeds[0]をインスタンス化したものを挿入。わざわざ変数を介してるのは、depthを0にしてからじゃないと変な気がするから。
+        //TREE.rootにseeds[0]をインスタンス化したものを挿入。
         var rootNode = new Node(seeds[0]);
         TREE.root = rootNode;
         rootNode.depth = 0;
@@ -46,17 +49,21 @@ TREE.event = {
 
 
     },
-    //seedの挿入はこちらを実行する。(一つのシードごとに呼び直すのでワンループの処理でおｋ)ツリーをビルドするときも、新規ノードを挿入する時もまたしかりである。
+    /*
+     * ノードの挿入メソッドです。TREE.event.insertで発火します。
+     * 
+     */
+    //seedの挿入はこちらを実行する。ツリーをビルドするときも、新規ノードを挿入する時もまたしかりである。
     insert: function (seed) {
 
         //はじめに比べるのは必ず根ノードであるので、初期値は根にする。
         TREE.comparision = TREE.root;
-        //何も挿入されなかった場合そのまま帰す。
+        //何もキー入力がされなかった場合そのまま帰す。
         if (!seed) {
             return;
         }
 
-        //もしTREE.dicに存在しなければグローバル変数としてこのノードを宣言する。名前は安直にnode[prm] (ex,node1, node114514)
+        //もしTREE.dicに存在しなければTREE.nodes.nodeXとしてこのノードを宣言する。
         if (!TREE.dic[seed]) {
             TREE.dic[seed] = 1;
             eval("TREE.nodes.node" + seed + "= new Node(seed)");
@@ -68,21 +75,17 @@ TREE.event = {
         //連続して比較する。葉ノードで無い時にループ
         while (eval("TREE.nodes.node" + seed + ".leaf") === false) {
 
-            //深さカウント whileを通過する度に１つずつ出していく。
+            //深さカウント whileを通過する度に１つずつ足していく。
             eval("TREE.nodes.node" + seed + ".depth" + "=" + "TREE.nodes.node" + seed + ".depth +1");
 
 
 
             //seedが比較対象より大きいまたは等しい時、右に持っていく
             if (TREE.comparision.prm < seed) {
-                //alert("おおきいよ！" + seed);
 
                 //比較対象に右の子供がいる場合
                 if (eval("TREE.nodes.node" + TREE.comparision.prm + ".rightChild")) {
                     //次の比較対象をそいつにする。
-                    //alert("次の比較対象はこいつだ" + TREE.comparision.rightChild.prm);
-
-
                     TREE.comparision = TREE.comparision.rightChild;
                 } else {
                     //右の子供がいない場合,比較対象のグローバル変数node[prm]の右の子供を、node[seed]とする。
@@ -101,7 +104,6 @@ TREE.event = {
                 //比較対象に左の子供がいる場合
                 if (eval("TREE.nodes.node" + TREE.comparision.prm + ".leftChild")) {
                     //次の比較対象はそいつにする。
-                    //alert("次の比較対象はこいつだ" + TREE.comparision.leftChild.prm);
                     TREE.comparision = TREE.comparision.leftChild;
                 } else {
                     //左の子供が居ない場合、比較対象のnode[prm]の左の子供はnode[seed]になる。
@@ -126,6 +128,10 @@ TREE.event = {
         //一通り完了したら、cosole.logしとく。
         console.log("TREE.nodes.node" + seed + ":OK");
     },
+    /*
+     * ツリーの探索メソッドです。TREE.event.findで発火します。
+     * 
+     */
     find: function (seed) {
 
         //最初の比較ターゲットは根
@@ -158,6 +164,10 @@ TREE.event = {
 
 
     },
+    /*
+     * ツリーのソートメソッドです。TREE.event.sortで発火します。
+     * 
+     */
     sort: function () {
 
         var orderedNodes = [];
@@ -165,8 +175,8 @@ TREE.event = {
         TREE.comparision = TREE.root;
         while (Object.keys(tansakuzumi).length < Object.keys(TREE.dic).length) {
             //全てのノードが探索済みになるまで
-            
-            
+
+
             //まず左に行けるだけ行く
             while (TREE.comparision.leftChild && !tansakuzumi[TREE.comparision.leftChild.prm]) {
                 //比較対象に左の子供が居てかつ、tansakuzumiの中にその左の子供が入ってない時は繰り返しで、
@@ -174,7 +184,7 @@ TREE.event = {
                 //左に進む
                 TREE.comparision = TREE.comparision.leftChild;
             }
-            
+
             //次に入れられるなら入れる。
             if (!tansakuzumi[TREE.comparision.prm]) {
                 //比較対象がtansakuzumiに入って無ければ、
@@ -201,33 +211,18 @@ TREE.event = {
 
 
         }
+        //ソートされた配列を返す。
         return orderedNodes;
 
-    },
-    forEach: function (func, node) {
-        // 探索の初期ノードが選択されていなければルートノード
-        node = node || TREE.root;
-        alert(node);
-
-        //  左側を再帰的に探索
-        if (node.leftChild) {
-            this.forEach(func, node.leftChild);
-        }
-        // 左ノードがなければ値を引数として与えられた関数に渡す
-        func(node.prm);
-
-        // 右側を再帰的に探索
-        if (node.rightChild) {
-            this.forEach(func, node.righChild);
-        }
     }
-
-
 };
 
+/*
+ * 乱数を生成する関数です。
+ * 
+ */
 
-
-//ランダムにノードシードに整数値を入れるよ。
+//ランダムにノードシードに整数値を入れる。
 function getRandomInt(min, max, amount) {
 
     for (var i = 0; i < amount; i++) {
@@ -236,8 +231,10 @@ function getRandomInt(min, max, amount) {
 
     }
 }
-
-//onclickでシードを実際に生成する。
+/*
+ * 乱数関数を呼び出し、配列に入れます。
+ * 
+ */
 $("#seedInput").bind("click", function () {
     //if($("#min").val().type() != int)
 
@@ -249,6 +246,11 @@ $("#seedInput").bind("click", function () {
         $("#seedOutput").append(nodeSeeds[i] + ",");
     }
 });
+
+/*
+ * ノードクラスです。ノードの要素を定義します。
+ * 
+ */
 
 //ノードのクラス
 var Node = function (prm) {
@@ -264,13 +266,19 @@ Node.prototype.position = function () {
     return "数値:" + this.prm + " 深さ" + this.depth + "　親:" + this.parent.prm + "　子:" + this.leftChild.prm + "," + this.rightChild.prm;
 };
 
-
+/*
+ * TREE.event.buildをクリックで発火します。
+ * 
+ */
 //クリックでツリーの初期ビルド
 $("#treeOutput").bind("click", function () {
     TREE.event.build(nodeSeeds);
 });
 
-//このノードを挿入するで後から挿入出来る
+/*
+ * TREE.event.insertをクリックで発火します。
+ * 
+ */
 $("#insert").bind("click", function () {
     var target = $("#target").val();
     if (TREE.dic[target]) {
@@ -288,7 +296,10 @@ $("#insert").bind("click", function () {
 
 });
 
-//木から探索関数を呼び出す。
+/*
+ * TREE.event.findをクリックで発火します。
+ * 
+ */
 $("#find").bind("click", function () {
     var target = $("#target").val();
     //findは返り値で文字列を持ってくるのでそれをただhtmlに投げる。
@@ -296,32 +307,24 @@ $("#find").bind("click", function () {
 
 
 });
-//木をソートする
+/*
+ * TREE.event.sortをクリックで発火します。
+ * 
+ */
 $("#sort").bind("click", function () {
     var ordered = TREE.event.sort();
     for (var i = 0, len = ordered.length; i < len; i++) {
-        $("#resultMsg").append(ordered[i] + ",");
+        $("#sortresult").append(ordered[i] + ",");
     }
 
 
 });
 
+/*
+ * 以下参考用探索関数など
+ * 
+ */
 
-//探索比較用関数を呼び出す。
-$("#shougou").bind("click", function () {
-    var target = $("#s_target").val();
-
-    $("#sMsg").html(shougou(target));
-
-});
-
-//バブルソート関数を呼び出す。
-$("#bsort").bind("click", function () {
-    bubbleSort();
-    for (var i = 0; i < aftersort.length; i++) {
-        $("#sMsg").append(aftersort[i] + ",");
-    }
-});
 
 //探索比較用関数
 function shougou(target) {
@@ -362,8 +365,31 @@ function bubbleSort() {
 
 
 }
+//探索比較用関数を呼び出す。
+$("#shougou").bind("click", function () {
+    var target = $("#s_target").val();
+
+    $("#sMsg").html(shougou(target));
+
+});
+
+//バブルソート関数を呼び出す。
+$("#bsort").bind("click", function () {
+    bubbleSort();
+    for (var i = 0; i < aftersort.length; i++) {
+        $("#ssort").append(aftersort[i] + ",");
+    }
+});
 
 
+
+
+
+
+
+/*
+ * 以下はやりたかったけど出来なかったものの遺跡。
+ */
 //ツリーをグラフに書き出す。
 $("#makegraf").bind("click", function () {
     makeGraf();
