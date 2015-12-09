@@ -15,38 +15,41 @@
     <body>
         <main>
             <h1>二分探索木が体験できます</h1>
-            <h2>ツリーを再生成する際は更新して下さい！正しく作れません。</h2>
+            <h2 style="color: red">ツリーを再生成する際は更新して下さい！正しく作れません。</h2>
 
 
             <div id="seedArea">
-                <h3>ノードの範囲を決めてね。</h3>
+                <h3>①ノードの範囲を決めて下さい。</h3>
                 <p>最小の数：<input type="number" min="0" id="min" value="1"></p>
                 <p>最大の数：<input type="number" min="1" id="max" value="20"></p>
                 <p>要素の数：<input type ="number" min="1" id="amount" value="10"></p>
-                <input type="button" id="seedInput" value="生成">
+                <input type="button" id="seedInput" value="乱数生成">
 
                 <p id="seedOutput"></p>
 
             </div>
             <div id="treeArea">
-                <h3>ツリーを出力します</h3>
+                <h3>②ツリーを生成します</h3>
                 <input type="button" id="treeOutput" value="ツリー生成">
-                <input type="button" id="makegraf" value="グラフを生成">
+                <!--<input type="button" id="makegraf" value="グラフを生成">-->
                 <p id="errMsg"></p>
+                <h3>③操作できます</h3>
                 <input type="number" min="0" id="target">
                 <input type="button" id="find" value="このノードを探す。">
                 <input type="button" id="insert" value="このノードを挿入する">
                 <input type="button" id="sort" value="ソートする">
                 <p id="resultMsg"></p>
+                <p id="sortresult"></p>
                 <div id="nodes"></div>
             </div>
 
             <div id="badArea">
-                <h3>ちなみに同じ検索処理を配列と一から照合する動作だとこうなります。</h3>
+                <h3>④ちなみに同じ検索処理を配列と一から照合する動作だとこうなります。</h3>
                 <input type="number" min="0" id="s_target">
                 <input type="button" id="shougou" value="配列と照合して検索。">
                 <input type="button" id="bsort" value="バブルソートする。">
                 <p id="sMsg"></p>
+                <p id="ssort"></p>
             </div>
         </main>
 
