@@ -133,6 +133,7 @@ TREE.event = {
      * 
      */
     find: function (seed) {
+        
 
         //最初の比較ターゲットは根
         TREE.comparision = TREE.root;
@@ -272,7 +273,12 @@ Node.prototype.position = function () {
  */
 //クリックでツリーの初期ビルド
 $("#treeOutput").bind("click", function () {
+    var startTime =+new Date();
     TREE.event.build(nodeSeeds);
+    var finishTime =+new Date();
+    var calctime = (startTime-finishTime);
+    $("#t-time").html("計算時間" + calctime + "ms");
+    
 });
 
 /*
@@ -280,6 +286,7 @@ $("#treeOutput").bind("click", function () {
  * 
  */
 $("#insert").bind("click", function () {
+    var startTime =+new Date();
     var target = $("#target").val();
     if (TREE.dic[target]) {
         $("#resultMsg").html(target + "は既に存在します。");
@@ -293,6 +300,9 @@ $("#insert").bind("click", function () {
     } else {
         $("#resultMsg").html(target + "を挿入しました。");
     }
+    var finishTime =+new Date();
+    var calctime = (startTime-finishTime);
+    $("#t-time").html("計算時間" + calctime + "ms");
 
 });
 
@@ -301,9 +311,13 @@ $("#insert").bind("click", function () {
  * 
  */
 $("#find").bind("click", function () {
+    var startTime =+new Date();
     var target = $("#target").val();
     //findは返り値で文字列を持ってくるのでそれをただhtmlに投げる。
     $("#resultMsg").html(TREE.event.find(target));
+    var finishTime =+new Date();
+    var calctime = (startTime-finishTime);
+    $("#t-time").html("計算時間" + calctime + "ms");
 
 
 });
@@ -312,10 +326,14 @@ $("#find").bind("click", function () {
  * 
  */
 $("#sort").bind("click", function () {
+    var startTime =+new Date();
     var ordered = TREE.event.sort();
     for (var i = 0, len = ordered.length; i < len; i++) {
         $("#sortresult").append(ordered[i] + ",");
     }
+    var finishTime =+new Date();
+    var calctime = (startTime-finishTime);
+    $("#t-time").html("計算時間" + calctime + "ms");
 
 
 });
@@ -328,6 +346,7 @@ $("#sort").bind("click", function () {
 
 //探索比較用関数
 function shougou(target) {
+    
     //何回出てきたか
     var count = 0;
     //何番目が最初か
@@ -349,15 +368,15 @@ function shougou(target) {
     return "探索が終了しました。配列内で" + target + "は" + count + "回出てきており、初めに出てきたのは" + th + "番目です。";
 }
 function bubbleSort() {
-    aftersort = nodeSeeds;
+    aftersort = Object.keys(TREE.dic);
     for (i = 0; i < aftersort.length - 1; i++)
     {
         for (j = 0; j < aftersort.length - i - 1; j++)
         {
-            if (aftersort[j] > aftersort[j + 1])
+            if (parseInt(aftersort[j]) > parseInt(aftersort[j + 1]))
             {
-                n = aftersort[j];
-                aftersort[j] = aftersort[j + 1];
+                n = parseInt(aftersort[j]);
+                aftersort[j] = parseInt(aftersort[j + 1]);
                 aftersort[j + 1] = n;
             }
         }
@@ -367,18 +386,28 @@ function bubbleSort() {
 }
 //探索比較用関数を呼び出す。
 $("#shougou").bind("click", function () {
+    var startTime =+new Date();
     var target = $("#s_target").val();
+    
 
     $("#sMsg").html(shougou(target));
+    
+    var finishTime =+new Date();
+    var calctime = (startTime-finishTime);
+    $("#s-time").html("計算時間" + calctime + "ms");
 
 });
 
 //バブルソート関数を呼び出す。
 $("#bsort").bind("click", function () {
+    var startTime =+new Date();
     bubbleSort();
     for (var i = 0; i < aftersort.length; i++) {
         $("#ssort").append(aftersort[i] + ",");
     }
+    var finishTime =+new Date();
+    var calctime = (startTime-finishTime);
+    $("#s-time").html("計算時間" + calctime + "ms");
 });
 
 
