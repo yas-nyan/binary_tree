@@ -99,10 +99,10 @@ TREE.event = {
                     //右の子供がいない場合,比較対象のグローバル変数node[prm]の右の子供を、node[seed]とする。
                     eval("node" + TREE.comparision.prm + ".rightChild = node" + seed);
                     //比較対象のリーフ属性をこっそりfalseにする
-                    eval("node" + TREE.comparision.prm +".leaf = false");
-                    
+                    eval("node" + TREE.comparision.prm + ".leaf = false");
+
                     //そんで、node[seed]の親をもともとの比較対象のノードにする。
-                    eval("node" + seed + ".parent" + "= node" + TREE.comparision.prm);
+                    //eval("node" + seed + ".parent" + "= node" + TREE.comparision.prm);
                     //右の子供がいなかったということはすなわち、このノードは葉ノードになったということだね。これでループを抜ける。
                     eval("node" + seed + ".leaf" + "= true");
                 }
@@ -120,10 +120,10 @@ TREE.event = {
                     //左の子供が居ない場合、比較対象のnode[prm]の左の子供はnode[seed]になる。
                     eval("node" + TREE.comparision.prm + ".leftChild = node" + seed);
                     //比較対象のリーフ属性をこっそりfalseにする
-                    eval("node" + TREE.comparision.prm +".leaf = false");
-                    
+                    eval("node" + TREE.comparision.prm + ".leaf = false");
+
                     //そんで、node[seed]の親を比較対象のノードにする。
-                    eval("node" + seed + ".parent" + "= node" + TREE.comparision.prm);
+                    //eval("node" + seed + ".parent" + "= node" + TREE.comparision.prm);
                     //比較対象の左の子供がいなかったということはすなわち、このノードは葉ノードになったということだね。これでループを抜ける。
                     eval("node" + seed + ".leaf" + "= true");
                 }
@@ -193,7 +193,7 @@ TREE.event = {
 //        }
 
     }
-  
+
 
 };
 
@@ -227,7 +227,7 @@ var Node = function (prm) {
     this.prm = prm;
     this.depth = 0;
     this.leaf = false; //葉ノードであるかどうかはブーリアン型で定義付け。デフォはfalse
-    this.parent = "";
+    //this.parent = "";
     this.rightChild = "";
     this.leftChild = "";
 };
@@ -256,15 +256,15 @@ $("#insert").bind("click", function () {
 });
 
 //木から探索関数を呼び出す。
-$("#find").bind("click", function(){
+$("#find").bind("click", function () {
     var target = $("#target").val();
     //findは返り値で文字列を持ってくるのでそれをただhtmlに投げる。
     $("#resultMsg").html(TREE.event.find(target));
-    
-    
+
+
 });
 //気をソートする
-$("#sort").bind("click", function(){
+$("#sort").bind("click", function () {
     $("#resultMsg").html(TREE.event.sort());
 });
 
@@ -278,9 +278,9 @@ $("#shougou").bind("click", function () {
 });
 
 //バブルソート関数を呼び出す。
-$("#bsort").bind("click", function(){
+$("#bsort").bind("click", function () {
     bubbleSort();
-    for(var i =0;i<aftersort.length;i++){
+    for (var i = 0; i < aftersort.length; i++) {
         $("#sMsg").append(aftersort[i] + ",");
     }
 });
@@ -321,10 +321,17 @@ function bubbleSort() {
             }
         }
     }
-   
+
 
 }
 
 
-
-//ツリー構造を書き出す。
+//ツリーをグラフに書き出す。
+$("#makegraf").bind("click", function(){
+    makeGraf();
+});
+//オブジェクトをJSONにする。
+function makeGraf() {
+     json_text = JSON.parse(JSON.stringify(eval("node" + nodeSeeds[0])));
+    alert(json_text);
+}
