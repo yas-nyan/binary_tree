@@ -22,9 +22,10 @@ TREE.event = {
 
         //TREE.rootにseeds[0]をインスタンス化したものを挿入。わざわざ変数を介してるのは、depthを0にしてからじゃないと変な気がするから。
         var rootNode = new Node(seeds[0]);
+        TREE.root = rootNode;
         rootNode.depth = 0;
         //TREE.root = rootNode;
-        
+
         eval("TREE.nodes.node" + seeds[0] + "= rootNode");
         //ルートが入ったことをTREE.dicに宣言しとく。
         TREE.dic[seeds[0]] = 1;
@@ -49,7 +50,11 @@ TREE.event = {
     insert: function (seed) {
 
         //はじめに比べるのは必ず根ノードであるので、初期値は根にする。
-        TREE.comparision = eval("TREE.nodes.node" + nodeSeeds[0]);
+        TREE.comparision = TREE.root;
+        //何も挿入されなかった場合そのまま帰す。
+        if (!seed) {
+            return;
+        }
 
         //もしTREE.dicに存在しなければグローバル変数としてこのノードを宣言する。名前は安直にnode[prm] (ex,node1, node114514)
         if (!TREE.dic[seed]) {
@@ -124,7 +129,7 @@ TREE.event = {
     find: function (seed) {
 
         //最初の比較ターゲットは根
-        TREE.comparision = eval("TREE.nodes.node" + nodeSeeds[0]);
+        TREE.comparision = TREE.root;
         while (TREE.comparision.prm != seed) {
             //探したいターゲットが比較対象より大きい時
             if (TREE.comparision.prm < seed) {
@@ -154,26 +159,67 @@ TREE.event = {
 
     },
     sort: function () {
-        //未実装
-//        var orderedNodes =[];
-//        //how many tree nodes
-//        var hmtNodes = Object.keys(TREE.dic).length;
-//        //最初の比較ターゲットは根
-//        TREE.comparision = eval("node" + nodeSeeds[0]);
-//        while(TREE.comparision.leftChild){
-//            //１番左下に行く
-//            TREE.comparision = TREE.comparision.leftChild;
-//        }
-//        orderedNodes.push(TREE.comparision.prm);
-//        
-//        //こっからスタート
-//        while(orderedNodes.length ==  hmtNodes){
-//            if(TREE.comparision.leftChild){
-//                TREE.comparision = TREE.comparision.leftChild;
-//            }
-//            
-//        }
 
+        var orderedNodes = [];
+        var tansakuzumi = {};
+        TREE.comparision = TREE.root;
+        while (Object.keys(tansakuzumi).length < Object.keys(TREE.dic).length) {
+            //全てのノードが探索済みになるまで
+            
+            
+            //まず左に行けるだけ行く
+            while (TREE.comparision.leftChild && !tansakuzumi[TREE.comparision.leftChild.prm]) {
+                //比較対象に左の子供が居てかつ、tansakuzumiの中にその左の子供が入ってない時は繰り返しで、
+
+                //左に進む
+                TREE.comparision = TREE.comparision.leftChild;
+            }
+            
+            //次に入れられるなら入れる。
+            if (!tansakuzumi[TREE.comparision.prm]) {
+                //比較対象がtansakuzumiに入って無ければ、
+
+                //探索済みにして、
+                tansakuzumi[TREE.comparision.prm] = 1;
+
+                //orderedNodesに追加する。
+                orderedNodes.push(TREE.comparision.prm);
+            } else //もし無理なら右に一つだけ行く
+            if (TREE.comparision.rightChild && !tansakuzumi[TREE.comparision.rightChild.prm]) {
+                //比較対象に右の子供が居てかつ、tansakuzumiの中にその右の子供が入ってなかったら(右に行くのは一個だけずつバック)
+                TREE.comparision = TREE.comparision.rightChild;
+
+            } else {
+                //いずれにもあてはらまらない場合一個上に戻る。
+                TREE.comparision = TREE.comparision.parent;
+            }
+
+
+
+
+
+
+
+        }
+        return orderedNodes;
+
+    },
+    forEach: function (func, node) {
+        // 探索の初期ノードが選択されていなければルートノード
+        node = node || TREE.root;
+        alert(node);
+
+        //  左側を再帰的に探索
+        if (node.leftChild) {
+            this.forEach(func, node.leftChild);
+        }
+        // 左ノードがなければ値を引数として与えられた関数に渡す
+        func(node.prm);
+
+        // 右側を再帰的に探索
+        if (node.rightChild) {
+            this.forEach(func, node.righChild);
+        }
     }
 
 
@@ -215,7 +261,7 @@ var Node = function (prm) {
 };
 //ノードの今の場所を確認するメソッド
 Node.prototype.position = function () {
-    return "数値:" + this.prm + " 深さ"+ this.depth +"　親:" + this.parent.prm + "　子:" + this.leftChild.prm + "," + this.rightChild.prm;
+    return "数値:" + this.prm + " 深さ" + this.depth + "　親:" + this.parent.prm + "　子:" + this.leftChild.prm + "," + this.rightChild.prm;
 };
 
 
@@ -232,8 +278,13 @@ $("#insert").bind("click", function () {
         return;
     }
     TREE.event.insert(target);
-    //終わったらエラーログを追加。
-    $("#resultMsg").html(target + "を挿入しました。");
+
+    //終わったらエラーログを追加。targetが空の場合はハネる。
+    if (!target) {
+        $("#resultMsg").html("何か数字を入れて下さい。");
+    } else {
+        $("#resultMsg").html(target + "を挿入しました。");
+    }
 
 });
 
@@ -245,9 +296,14 @@ $("#find").bind("click", function () {
 
 
 });
-//気をソートする
+//木をソートする
 $("#sort").bind("click", function () {
-    $("#resultMsg").html(TREE.event.sort());
+    var ordered = TREE.event.sort();
+    for (var i = 0, len = ordered.length; i < len; i++) {
+        $("#resultMsg").append(ordered[i] + ",");
+    }
+
+
 });
 
 
@@ -309,12 +365,30 @@ function bubbleSort() {
 
 
 //ツリーをグラフに書き出す。
-$("#makegraf").bind("click", function(){
+$("#makegraf").bind("click", function () {
     makeGraf();
 });
 //オブジェクトをJSONにする。
 function makeGraf() {
-    $.parseJSON(TREE.nodes);
-     
-    //alert(json_text);
+    //さあ鬼の書き出しだ。
+    var jsonTREE = {};
+    testNode = clone(TREE.root.rightChild);
+    testNode.prm = "testtest";
+
+
+    A = {
+        rootnode: {
+            'prm': 2,
+            'rightChild': node3 = {
+            },
+            'leftChild': node1 = {
+            }
+        }
+
+    };
+
+
+
+
+
 }
