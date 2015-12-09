@@ -172,8 +172,28 @@ TREE.event = {
 
     },
     sort: function () {
+        //未実装
+//        var orderedNodes =[];
+//        //how many tree nodes
+//        var hmtNodes = Object.keys(TREE.dic).length;
+//        //最初の比較ターゲットは根
+//        TREE.comparision = eval("node" + nodeSeeds[0]);
+//        while(TREE.comparision.leftChild){
+//            //１番左下に行く
+//            TREE.comparision = TREE.comparision.leftChild;
+//        }
+//        orderedNodes.push(TREE.comparision.prm);
+//        
+//        //こっからスタート
+//        while(orderedNodes.length ==  hmtNodes){
+//            if(TREE.comparision.leftChild){
+//                TREE.comparision = TREE.comparision.leftChild;
+//            }
+//            
+//        }
 
     }
+  
 
 };
 
@@ -243,6 +263,11 @@ $("#find").bind("click", function(){
     
     
 });
+//気をソートする
+$("#sort").bind("click", function(){
+    $("#resultMsg").html(TREE.event.sort());
+});
+
 
 //探索比較用関数を呼び出す。
 $("#shougou").bind("click", function () {
@@ -253,7 +278,7 @@ $("#shougou").bind("click", function () {
 });
 
 //バブルソート関数を呼び出す。
-$("#sort").bind("click", function(){
+$("#bsort").bind("click", function(){
     bubbleSort();
     for(var i =0;i<aftersort.length;i++){
         $("#sMsg").append(aftersort[i] + ",");
@@ -299,3 +324,7 @@ function bubbleSort() {
    
 
 }
+
+
+
+//ツリー構造を書き出す。
